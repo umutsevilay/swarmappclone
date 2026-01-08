@@ -1,0 +1,174 @@
+# Swarm Benzeri Sosyal Check-in Web Uygulaması
+React (Frontend) + Node.js / Express (Backend) + MongoDB
+
+Bu proje, Swarm/Foursquare benzeri bir sosyal check-in web uygulamasıdır. Kullanıcılar bulundukları konumlarda check-in yapabilir, diğer kullanıcıların yaptığı check-in’leri akış (feed) ekranında görüntüleyebilir ve kendi profillerinde check-in geçmişlerini inceleyebilir. Uygulama frontend, backend ve veritabanı olmak üzere üç ana bileşenden oluşan bir full-stack web uygulamasıdır.
+
+PROJE AMACI  
+Projenin temel amacı konum tabanlı sosyal medya mantığını uygulayan, modern web teknolojileri kullanılarak geliştirilmiş, ölçeklenebilir ve güvenli bir web uygulaması oluşturmaktır. Proje kapsamında React ile tek sayfa uygulama (SPA) mimarisi, Node.js ve Express ile RESTful API yapısı ve MongoDB ile NoSQL veritabanı kullanımı hedeflenmiştir. Aynı zamanda kullanıcı kimlik doğrulama, veri güvenliği ve katmanlı mimari prensipleri uygulanmıştır.
+
+KULLANILAN TEKNOLOJİLER  
+Frontend tarafında React, Vite, JavaScript (ES6+), HTML5 ve CSS3 kullanılmıştır. React bileşen tabanlı mimari sayesinde yeniden kullanılabilir arayüz bileşenleri geliştirilmiştir.  
+Backend tarafında Node.js, Express.js, MongoDB, Mongoose, JWT, dotenv ve CORS kullanılmıştır. Express.js REST API geliştirmek için tercih edilmiş, MongoDB esnek veri modeli nedeniyle kullanılmıştır.
+
+SİSTEM ANALİZİ  
+Sistem tek tip kullanıcı rolüne sahiptir: Kullanıcı. Kullanıcılar sisteme kayıt olabilir, giriş yapabilir, check-in oluşturabilir, diğer kullanıcıların paylaşımlarını görüntüleyebilir ve kendi profillerinde geçmiş check-in’lerini listeleyebilir. Sistem, kullanıcı yönetimi ve check-in yönetimi olmak üzere iki ana iş alanına ayrılmıştır.
+
+FONKSİYONEL GEREKSİNİMLER  
+Kullanıcı sisteme kayıt olabilmelidir.  
+Kullanıcı sisteme giriş yapabilmelidir.  
+Kullanıcı konum bilgisi içeren check-in oluşturabilmelidir.  
+Kullanıcı diğer kullanıcıların check-in’lerini akış ekranında görebilmelidir.  
+Kullanıcı kendi check-in geçmişini profil sayfasında görüntüleyebilmelidir.  
+
+FONKSİYONEL OLMAYAN GEREKSİNİMLER  
+Sistem hızlı yanıt verebilmelidir.  
+Sistem aynı anda birden fazla kullanıcıyı destekleyebilmelidir.  
+Veriler güvenli şekilde saklanmalıdır.  
+Kullanıcı şifreleri düz metin olarak tutulmamalıdır.  
+Sistem REST mimari prensiplerine uygun olmalıdır.  
+
+SİSTEM MİMARİSİ  
+Uygulama istemci-sunucu mimarisi ile geliştirilmiştir. Frontend, backend’e HTTP protokolü üzerinden REST API çağrıları yapar. Backend gelen istekleri doğrular, iş mantığını uygular ve MongoDB veritabanı ile iletişim kurar. MongoDB, kullanıcı ve check-in verilerinin kalıcı olarak saklanmasından sorumludur.
+
+GENEL MİMARİ DİYAGRAMI (METİNSEL)
+
+[ React Frontend (Vite) ]  
+        |  
+        | HTTP / REST API  
+        v  
+[ Node.js + Express Backend ]  
+        |  
+        | Mongoose ODM  
+        v  
+[ MongoDB Veritabanı ]
+
+VERİTABANI TASARIMI – ER DİYAGRAMI (METİNSEL)
+
+Bir kullanıcı birden fazla check-in yapabilir. Her check-in yalnızca bir kullanıcıya aittir.
+
+USER 1 ---------------- * CHECKIN
+
+USER  
+- _id (ObjectId)  
+- username  
+- email  
+- password  
+- createdAt  
+
+CHECKIN  
+- _id (ObjectId)  
+- userId (Foreign Key)  
+- venueName  
+- lat  
+- lng  
+- message  
+- createdAt  
+
+UML CLASS DİYAGRAMI (METİNSEL)
+
++------------------------+
+| User                   |
++------------------------+
+| id                     |
+| username               |
+| email                  |
+| password               |
+| createdAt              |
++------------------------+
+| register()             |
+| login()                |
+| getProfile()           |
++------------------------+
+
++------------------------+
+| CheckIn                |
++------------------------+
+| id                     |
+| userId                 |
+| venueName              |
+| lat                    |
+| lng                    |
+| message                |
+| createdAt              |
++------------------------+
+| createCheckIn()        |
+| listUserCheckIns()     |
+| listFeed()             |
++------------------------+
+
+USE CASE DİYAGRAMI (METİNSEL)
+
+AKTÖR: Kullanıcı
+
+- Kayıt Ol  
+- Giriş Yap  
+- Check-in Oluştur  
+- Akıştaki Check-in’leri Görüntüle  
+- Profilde Kendi Check-in’lerini Gör  
+
+PROJE KLASÖR YAPISI
+
+project-root/
+backend/
+app.js
+routes/
+controllers/
+models/
+.env
+frontend/
+src/
+index.html
+package.json
+README.md
+
+API ENDPOINTLERİ
+
+POST /api/auth/register -> Kullanıcı kayıt  
+POST /api/auth/login -> Kullanıcı giriş  
+POST /api/checkins -> Yeni check-in oluşturma  
+GET /api/checkins/feed -> Akış verileri  
+GET /api/users/:id/checkins -> Kullanıcıya ait check-in’ler  
+
+GEREKSİNİMLER  
+Bu projeyi çalıştırabilmek için Node.js (LTS), npm ve MongoDB Community Server sistemde kurulu olmalıdır.
+
+ORTAM DEĞİŞKENLERİ  
+Backend klasörü içinde bir .env dosyası oluşturulmalıdır:
+
+PORT=5000  
+MONGO_URI=mongodb://127.0.0.1:27017/swarm_clone  
+JWT_SECRET=secretkey  
+
+UYGULAMAYI ÇALIŞTIRMA  
+
+Öncelikle MongoDB servisi ayrı bir terminal üzerinden çalıştırılmalıdır:
+
+mongod  
+
+MongoDB çalıştıktan sonra backend başlatılır:
+
+cd backend  
+npm install  
+node app.js  
+
+Backend varsayılan olarak http://localhost:5000 adresinde çalışır.
+
+Backend çalıştıktan sonra frontend başlatılır:
+
+cd frontend  
+npm install  
+npm run dev  
+
+Frontend varsayılan olarak http://localhost:5173 adresinde çalışır.
+
+GÜVENLİK  
+Kullanıcı şifreleri hashlenerek saklanır. Kimlik doğrulama işlemleri JWT ile yapılır. Ortam değişkenleri .env dosyasında tutulur. CORS yapılandırması ile sadece izin verilen istemcilerin backend’e erişimine izin verilir.
+
+HATA VE SORUN GİDERME  
+MongoDB bağlantı hatalarında mongod komutunun çalıştığı ve bağlantı adresinin doğru olduğu kontrol edilmelidir. Frontend backend’e bağlanamıyorsa backend servisinin çalıştığı doğrulanmalıdır. Port çakışması durumunda frontend 5173, backend 5000 portlarını kullanmalıdır.
+
+SONUÇ  
+Bu proje, konum tabanlı sosyal etkileşim sağlayan, modern, güvenli ve ölçeklenebilir bir full-stack web uygulamasıdır. Akademik projeler, bitirme projeleri, demo uygulamalar ve portföy çalışmaları için uygundur.
+
+LİSANS  
+Bu proje eğitim amaçlı geliştirilmiştir.
